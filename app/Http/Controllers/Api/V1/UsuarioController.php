@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\UsuarioRequest;
+use App\Http\Resources\UsuarioCollection;
 use App\Http\Resources\UsuarioResource;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
@@ -11,51 +13,47 @@ use Illuminate\Support\Facades\DB;
 class UsuarioController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el listado del recurso.
      */
     public function index()
     {
-//        $usuarios = UsuarioResource::collection(Usuario::paginate(4));
-        $usuarios = UsuarioResource::collection(
+        return new UsuarioCollection(
             DB::table('usuarios')
                 ->where('deleted', 'false')
                 ->orderBy('created_at', 'desc')
-                ->take(10)
-                ->get()
+                ->paginate(5)
         );
-        return $usuarios;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Crea un recurso en el almacenamiento.
      */
     public function store(UsuarioRequest $request)
     {
-        $result = Usuario::create($request->all());
+        $usuario = Usuario::create($request->all());
         return response()->json(
             [
                 'success' => true,
                 'message' => 'Registrado correctamente.',
-                'data' => $result
+                'data' => $usuario
             ], 200
         );
     }
 
     /**
-     * Display the specified resource.
+     * Muestra el recurso especifico.
      */
     public function show(Usuario $usuario)
     {
-        return response()->json($usuario, 200);
+        return new UsuarioResource($usuario);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza el recurso especifico en el almacenamiento.
      */
     public function update(UsuarioRequest $request, Usuario $usuario)
     {
-        $usuario->update($request->all());
-        $usuario->refresh();
+        $usuario->update($request->validated());
         return response()->json(
             [
                 'success' => true,
@@ -66,7 +64,7 @@ class UsuarioController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina el recurso especifico del almacenamiento.
      */
     public function destroy(Usuario $usuario)
     {
