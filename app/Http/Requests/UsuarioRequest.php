@@ -23,13 +23,14 @@ class UsuarioRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'nombres' => ['required', 'string', 'max:255'],
             'apellidos' => ['required', 'string', 'max:255'],
             'direccion' => ['required', 'string ', 'max:255'],
             'telefono' => ['required', 'string', 'unique:usuarios', 'min:7', 'max:10'],
             'tipo' => ['integer', 'min:0', 'max:3'],
         ];
+        return $rules;
     }
 
     public function messages(): array
