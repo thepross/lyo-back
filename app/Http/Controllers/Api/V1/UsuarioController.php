@@ -146,15 +146,16 @@ class UsuarioController extends Controller
 
             // Guardar la nueva imagen
             $path = $request->file('image')->store('imagen', 'public');
+            $url = asset('storage/' . $path);
 
             // Guardar la ruta en la base de datos
             $user->update([
-                'imagen' => $path,
+                'imagen' => $url,
             ]);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Imagen de perfil actualizada correctamente',
-                'profile_image' => $path,
+                'data' => $url,
             ], 200);
         }
         // Si no se sube imagen, devuelve un error
