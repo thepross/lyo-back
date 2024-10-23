@@ -25,6 +25,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::apiResource('seguimientos', SeguimientoController::class);
 
     Route::get('usuarios-f/billeteras/{id}', [UsuarioController::class, 'getAllBilleteras'])->name('usuarios.billeteras');
+    Route::post('/profile-image', [UsuarioController::class, 'updateProfileImage']);
 
     Route::get('transacciones-f/billetera/{id}', [TransaccionController::class, 'getTransacciones'])->name('transacciones-f.billetera');
 });

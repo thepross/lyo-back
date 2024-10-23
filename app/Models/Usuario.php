@@ -13,7 +13,7 @@ class Usuario extends Model
 
     protected $table = "usuarios";
 
-    protected $fillable = ["nombres", "apellidos", "direccion", "telefono", "tipo", 'billeteras'];
+    protected $fillable = ["nombres", "apellidos", "direccion", "telefono", "tipo", 'billeteras', 'imagen'];
 
 
     /**
@@ -39,7 +39,7 @@ class Usuario extends Model
     //     }
     // }
 
-    public function billeteras() : HasMany 
+    public function billeteras(): HasMany
     {
         return $this->hasMany(Billetera::class, 'id_usuario');
     }

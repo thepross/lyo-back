@@ -9,6 +9,8 @@ use App\Http\Resources\UsuarioResource;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class UsuarioController extends Controller
 {
@@ -114,5 +116,52 @@ class UsuarioController extends Controller
         for ($i = 0; $i < 10; $i++) {
             echo "hola mundo";
         }
+    }
+
+    public function updateProfileImage(Request $request)
+    {
+        // Validar la imagen usando el Validator para poder devolver los errores personalizados
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Tamaño máximo 2MB
+            'id' => 'required|integer|exists:usuarios,id',
+        ]);
+
+        // Si la validación falla, devolvemos los errores en formato JSON
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validación fallida',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $user = Usuario::find($request->get('id'));
+
+        // Subir la imagen
+        if ($request->hasFile('image')) {
+            // Eliminar la imagen anterior si existe
+            if ($user->imagen) {
+                Storage::delete($user->imagen);
+            }
+
+            // Guardar la nueva imagen
+            $path = $request->file('image')->store('imagen', 'public');
+
+            // Guardar la ruta en la base de datos
+            $user->update([
+                'imagen' => $path,
+            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Imagen de perfil actualizada correctamente',
+                'profile_image' => $path,
+            ], 200);
+        }
+        // Si no se sube imagen, devuelve un error
+        return response()->json([
+            'status' => 'error',
+            'message' => 'No se subió ninguna imagen',
+        ], 400);
+
     }
 }
