@@ -21,6 +21,7 @@ class UsuarioResource extends JsonResource
             'direccion' => $this->direccion,
             'telefono' => $this->telefono,
             'tipo' => $this->tipo,
+            'imagen' => $this->imagen,
             'billeteras' => $this->billeteras,
         ];
     }
