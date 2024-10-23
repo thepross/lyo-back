@@ -30,6 +30,11 @@ class UsuarioRequest extends FormRequest
             'telefono' => ['required', 'string', 'unique:usuarios', 'min:7', 'max:10'],
             'tipo' => ['integer', 'min:0', 'max:3'],
         ];
+
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
+            $rules["telefono"] = ['required', 'string', 'unique:usuarios,telefono,' . $this->usuario->id, 'min:7', 'max:10'];
+        }
+
         return $rules;
     }
 
@@ -63,6 +68,7 @@ class UsuarioRequest extends FormRequest
                 'success' => false,
                 'message' => 'Error en la validación.',
                 'errors' => $validator->errors()
-            ], 422));
+            ], 422)
+        );
     }
 }

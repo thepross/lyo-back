@@ -18,8 +18,7 @@ class UsuarioController extends Controller
     public function index()
     {
         return new UsuarioCollection(
-            DB::table('usuarios')
-                ->where('deleted', 'false')
+            Usuario::where('deleted', 'false')
                 ->orderBy('created_at', 'desc')
                 ->paginate(5)
         );
@@ -36,8 +35,10 @@ class UsuarioController extends Controller
                 'success' => true,
                 'message' => 'Registrado correctamente.',
                 'data' => $usuario
-            ], 200
+            ],
+            200
         );
+
     }
 
     /**
@@ -53,13 +54,14 @@ class UsuarioController extends Controller
      */
     public function update(UsuarioRequest $request, Usuario $usuario)
     {
-        $usuario->update($request->validated());
+        $usuario->update($request->all());
         return response()->json(
             [
                 'success' => true,
                 'message' => 'Modificado correctamente.',
                 'data' => $usuario
-            ], 200
+            ],
+            200
         );
     }
 
@@ -74,7 +76,43 @@ class UsuarioController extends Controller
                 'success' => true,
                 'message' => 'Eliminado correctamente.',
                 'data' => $usuario
-            ], 200
+            ],
+            200
         );
+    }
+
+    public function getAllBilleteras($id)
+    {
+        $usuario = Usuario::find($id);
+        $billeteras = $usuario->billeteras;
+        $data = [
+            'usuario' => $usuario,
+            'billeteras' => $billeteras,
+        ];
+        return response()->json(
+            [
+                'success' => true,
+                'message' => 'Billeteras del usuario.',
+                'data' => $data
+            ],
+            200
+        );
+    }
+
+
+    public function funcion_necesaria()
+    {
+        $cadena = "este es un ejemplo de texto";
+        for ($i = 0; $i < 10; $i++) {
+            echo 'hola mundo';
+        }
+    }
+
+    public function funcion_necesaria_old()
+    {
+        $cadena = "este es un ejemplo de texto";
+        for ($i = 0; $i < 10; $i++) {
+            echo "hola mundo";
+        }
     }
 }
